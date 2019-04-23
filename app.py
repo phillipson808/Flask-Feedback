@@ -67,7 +67,9 @@ def add_user():
 def secret(username):
     """Example hidden page for logged-in users only."""
 
-    if "user_id" not in session:
+    user = User.query.filter_by(username=username).first()
+
+    if "user_id" not in session or session["user_id"] != user.id:
         flash("You must be logged in to view!")
         return redirect("/login")
 
@@ -130,6 +132,7 @@ def delete_user(username):
         # remove from db
         db.session.delete(user)
         db.session.commit()
+        session.pop("user_id")
         flash("User deleted")
         return redirect("/register")
 
@@ -218,3 +221,8 @@ def delete_feedback(feedback_id):
         db.session.commit()
         flash("Feedback deleted")
         return redirect(f"/users/{username}")
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return render_template('404.html')
