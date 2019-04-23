@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}Login Form{% endblock %}
+{% block content %}
+<h1>Login</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {% for field in form
+        if field.widget.input_type != 'hidden' %}
+    <p>
+        {{ field.label }}
+        {{ field }}
+
+    {% for error in field.errors %}
+        {{ error }}
+    {% endfor %}
+    </p>
+    {% endfor %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+           <ul>
+              {% for message in messages %}
+              <li>{{ message }}</li>
+              {% endfor %}
+           </ul>
+        {% endif %}
+     {% endwith %}
+    <button type="submit">Login</button>
+</form>
+{% endblock %}
